@@ -139,7 +139,16 @@ def check_user_valid(**kwargs):
         return None, _('User not exist')
     elif not user.is_valid:
         return None, _('Disabled or expired')
-
+    
+    ###################### YSL ADD ###############
+    from django_auth_ldap import backend
+    ldap_backend = backend.LDAPBackend()
+    ldap_res = ldap_backend.authenticate(username=username, password=password)
+    print(ldap_res)
+    if password and ldap_res:
+        return user, ''
+    ###################### YSL END ###############
+    
     if password and user.password and user.check_password(password):
         return user, ''
 
